@@ -1,0 +1,30 @@
+solid simple_pyramid
+  facet normal 0 0 -1
+    outer loop
+      vertex 0 0 0
+      vertex 1 0 0
+      vertex 0.5 0 0.8660
+    endloop
+  endfacet
+  facet normal 0 -0.8944 0.4472
+    outer loop
+      vertex 0 0 0
+      vertex 0.5 0 0.8660
+      vertex 0.5 0.8660 0.2887
+    endloop
+  endfacet
+  facet normal -0.8729 0.4364 0.2182
+    outer loop
+      vertex 0.5 0 0.8660
+      vertex 1 0 0
+      vertex 0.5 0.8660 0.2887
+    endloop
+  endfacet
+  facet normal 0.8729 0.4364 0.2182
+    outer loop
+      vertex 0 0 0
+      vertex 0.5 0.8660 0.2887
+      vertex 1 0 0
+    endloop
+  endfacet
+endsolid simple_pyramid
