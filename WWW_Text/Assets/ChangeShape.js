@@ -8,18 +8,7 @@ public var triangle = Vector3(0,0,0);
 
 function Start () {
 
-  // this code creates a pyramid mesh that replaces a generic cube (that essentially is just there
-  // so that we can make sure that each model fills the same bounds unlike our old renderer in threejs
-  //  var p0 =  Vector3(0,0,0);
-  //  var p1 =  Vector3(1,0,0);
-  //  var p2 =  Vector3(0.5f,0,Mathf.Sqrt(0.75f));
-  //  var p3 =  Vector3(0.5f,Mathf.Sqrt(0.75f),Mathf.Sqrt(0.75f)/3);
-  
-  // load an image from the web onto the mesh (WWW class is the only class
-  // that can connect to the network with WebGL so we should
-  // limit ourselves to it while developing
-
-  // Read the file line by line
+  // Read a stl file :
   // Grab the file via a WWW request
   var www_stl : WWW = new WWW (stl_url);
   
