@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/GUITextReader.js">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../LoadBinaryStlFile/Assets/LoadBinaryStl.js">
     <Files>
-      <File FileName="Assets/GUITextReader.js" Line="36" Column="23" />
+      <File FileName="../LoadBinaryStlFile/Assets/LoadBinaryStl.js" Line="16" Column="65" />
+      <File FileName="../LoadBinaryStlFile/Assets/ByteFunctions.js" Line="13" Column="27" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
