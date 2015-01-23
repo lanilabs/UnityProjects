@@ -11,6 +11,8 @@ function Start () {
 
   // Read a stl file :
   // Grab the file via a WWW request
+  var mesh : Mesh = GetComponent(MeshFilter).mesh;
+  var old_bounds : Bounds = mesh.bounds;
   var www_stl : WWW = new WWW (stl_location);
 
   // pause running until the file has been retrieved
@@ -26,111 +28,62 @@ function Start () {
   
   // Get the file header :
   var header : String = bytefcns.hex_uint8_to_ascii(file_content, 0, 160);
-  Debug.Log("Header : ");
-  Debug.Log(header);
+  //Debug.Log("Header : ");
+  //Debug.Log(header);
   
   // Get the number of triangles in the file
   var num_triangles : uint = bytefcns.hexstr_to_uint32(file_content, 160, 8);
-  Debug.Log("Number of Triangles:");
-  Debug.Log(num_triangles);
+  //Debug.Log("Number of Triangles:");
+  //Debug.Log(num_triangles);
+  
+  var all_triangles = new int[num_triangles*3];
   
   var offset : int = 168;
   var count : int = 96;
-    
+  
   for (i = 0;i<num_triangles;i++){
-    Debug.Log("Getting Triangle # : " + i.ToString());
+  	
+    //Debug.Log("Getting Triangle # : " + i.ToString());
     var triangle = grab_triangle(file_content,offset,count);
-    for (j=0;j<4;j++) {
-    	Debug.Log (triangle[j]);
-    }
+    for (j=0;j<3;j++){
+      all_triangles[k] = k ;
+      k+= 1;
+      shape.push(triangle[j]);
+	}
     offset += (count +4);
   }
   
-  //grab_triangle(data : String, offset : int , count : int )
-      
-      
-//  // Get the header data of the file :  
-//  var header : String = bytefcns.uint8_to_ascii(file_content, 0, 160);
-//  
-//  Debug.Log("Header : ");
-//  Debug.Log(header);
-//  
-//  
-//  var triangles_bytes : byte[] = new byte[8];
-//  for (i=0;i<8;i++){
-//    // Debug.Log(file_content[160+i]);
-//    triangles_bytes[i] = file_content[160+i];
-//  }
-//  
-//  Debug.Log(System.BitConverter.ToUInt32(triangles_bytes,0));
-//  // Convert to big-endian
-//  triangles_bytes = triangles_bytes.Reverse().ToArray();
-//  
-//  // Convert to uint
-//  var triangle_count : uint = System.BitConverter.ToUInt32(triangles_bytes,0);
-//  
-//  Debug.Log("Number of Triangles:");
-//  Debug.Log(triangle_count);
-    
-//  var line : String = "";
+  mesh.Clear();
   
-  // Read the file header (uint8[80])
+  mesh.vertices = shape;
+  mesh.triangles = all_triangles;
   
+  mesh.RecalculateNormals();
+  mesh.RecalculateBounds();
+  mesh.Optimize();
   
-  //header_ascii = bytefcns.uint8str_to_ascii(file_content,0,160);
-
-  //Debug.Log(file_content[160]);
+  var new_bounds : Bounds = mesh.bounds;
   
-//  for (i= 0; i < 160;i+=10){
-//    
-//    // Read a portion of the header
-//    for (j=0;j<9;j++) {
-//        // ignore spaces and line breaks (always occur as the 5th character)
-//    	// if (j != 4)
-//    	line += file_content[i+j]+"";
-//    }
-//    // convert to ascii
-//    header_ascii += line;
-//    //bytefcns.uint8str_to_ascii() ;
-//    
-//    line = "";
-//  }
+  Debug.Log("Old Bounds : ");
+  Debug.Log(old_bounds.extents);
+  Debug.Log("New Bounds : ");
+  Debug.Log(mesh.bounds.extents);
+  Debug.Log("Scale Factor : ");
   
-  // Print the file header to the console
+  var new_bound_max :float = get_maximum(mesh.bounds.extents);
+  var scale_factor : float = old_bounds.extents[0]/new_bound_max;
   
-  // Get the number of triangles in the file
-//  for (i=200;i<209;i++){
-//    // ignore line breaks
-//  	if (i != 204)
-//  	  line += file_content[i];
-//  }
-//  
-//  number_of_triangles = bytefcns.uint32str_to_float(line);
-//  line = "";
-//  Debug.Log("Number of Triangles:");
-//  Debug.Log(number_of_triangles);
+  this.renderer.transform.localScale.x = this.renderer.transform.localScale.x*scale_factor;
+  this.renderer.transform.localScale.y = this.renderer.transform.localScale.y*scale_factor;
+  this.renderer.transform.localScale.z = this.renderer.transform.localScale.z*scale_factor;
+  //scale_factor = scale_factor - old_bounds.size.x;
   
-  // A new triangle is defined from now on after every four REAL32[3] vectors
-  // normal vector, vector A, vector B, and vector C
-//  var start_pnt : int = 210;
-//  
-//  // characters included in file are spaces and line breaks as well
-//  var num_tri_chars : int = 87;
-//  var num_vec_chars : int = 10;
-//  
-  // Iterate through triangles
-  //for (i=start_pnt;i<start_pnt+(num_tri_chars);i+=95){
- 	// Grab the facet normal
-   //Debug.Log(grab_vector(file_content.Substring(i,29)));
-   // Iterate through each vector
-    //for (j=i+29;j<i+(29*3);j+=29){
-      //Debug.Log(grab_vector(file_content.Substring(j,29)));
-    //}
-  //}
+  //renderer.transform.localScale -= Vector3(scale_factor,scale_factor,scale_factor);
     
 }
-public function grab_triangle(data : String, offset : int , count : int ) {
-	var triangle : Vector3[] = new Vector3[4];
+
+public function grab_triangle(data : String, offset : int , count : int) {
+	var triangle : Vector3[] = new Vector3[3];
 	// Split String to grab all data related to the triangle 
 	// and the first vectors
 	var s_triangle : String = data.Substring(offset, count);
@@ -139,7 +92,10 @@ public function grab_triangle(data : String, offset : int , count : int ) {
 	
 	// Iterate through the facet normal, and three triangles
 	for ( var i=0;i<4;i++) {
-		triangle[i] = grab_vector(s_pnt,0,count_pnt);
+		
+		if (i!= 0)
+		  triangle[i-1] = grab_vector(s_pnt,0,count_pnt);
+		
 		// Get the next vector in the triangle
 		if (i!=3)
 		  s_pnt = s_triangle.Substring((i+1)*count_pnt,count_pnt);
@@ -147,6 +103,7 @@ public function grab_triangle(data : String, offset : int , count : int ) {
 	
 	return triangle;
 }
+
 public function grab_vector(data : String, offset : int, count : int) : Vector3 {
   
   var tmp_vec = Vector3(0.0,0.0,0.0);
@@ -158,91 +115,19 @@ public function grab_vector(data : String, offset : int, count : int) : Vector3 
  	// Adjust offset to start at the next point
     offset += count/3;
   }
+  
   return tmp_vec;
 }
 
-  // iterate through each triangle
-//  for (var m = start_pnt; m < start_pnt+number_of_triangles*num_tri_chars; m+= num_tri_chars) {
-////  	// iterate through x y and z of vector
-////  	var pnts_norm_chars = 27;
-////  	for (i = m; i< m+ 3*pnts_norm_chars;i+= pnts_norm_chars){
-////  	  // iterate through the characters in reach REAL32 float for the vector
-////  	  for (j=0;j<9;j++){
-////  	    if (j!= 4)
-////  	      line += file_content[i+j];
-////  	  }
-////  	  Debug.Log(line);
-////  	  line = "";
-////  	}
-////    
-//  }
-  
-
-//  Debug.Log(file_content.Length);
-//  for (var i=0;i<4;i++){
-//  	for (int j=0;j<8;j++){
-//  	  var line : string = file_content[j*(i+1)];
-//  	  Debug.Log(line);
-//  	}  	
-//  }
-//  var j : int;
-//  for (var i=0;i<file_content.Length;i++){
-//  	Debug.Log(file_content[i]);
-//  }
-  
-  
-  
-  // Read the triangle count
-  
-  
-  // Loop through rest of data
-  
-  
-  
-  
-//  // read each set of 4 bits in a file
-//  for (var i=0;i<file_content.Length;i+=4){
-//    // look for the word 'vertex', as you know that a vector is soon to follow
-//    if (file_content[i] == "vertex"){
-//      for (var j=1;j<= 3; j++){
-//      	// add item to 3D vector
-//      	triangle[j-1] = double.Parse(file_content[i+j]);
-//      }
-//      shape.push(triangle);
-//      Debug.Log(shape[shape.length-1]);
-//    }
-//  }
-//  
-//  mesh.Clear();
-//  
-//  mesh.vertices = shape;
-//  Debug.Log("First Mesh Vertices");
-//  Debug.Log(mesh.vertices[1]);
-//
-//  var all_triangles = new int[shape.length];
-//  
-//  
-//  var m = 0;
-//  
-//  Debug.Log("Number of Triangles : ");
-//  Debug.Log(shape.length);
-//  
-//  for ( var k=0;k<shape.length;k++) {
-//      all_triangles[k] = k ;
-//  }
-//  mesh.triangles = all_triangles;
-//  
-//   
-//  mesh.RecalculateNormals();
-//  mesh.RecalculateBounds();
-//  mesh.Optimize();
-//  
-//  var www : WWW = new WWW (url);
-//  
-//  yield www;
-//  this.renderer.material.mainTexture = www.texture;
-  
-//}
+function get_maximum(array : Vector3) : float {
+  var max : float = array[0];
+  for (var i = 1; i < 3; i++) {
+   if (array[i] > max) {
+       max = array[i];
+   }
+  }
+  return max;
+}
 
 function Update () {
 

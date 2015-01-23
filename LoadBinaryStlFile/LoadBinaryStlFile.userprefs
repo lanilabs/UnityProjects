@@ -2,8 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/LoadBinaryStl.js">
     <Files>
-      <File FileName="Assets/LoadBinaryStl.js" Line="16" Column="65" />
-      <File FileName="Assets/ByteFunctions.js" Line="13" Column="27" />
+      <File FileName="Assets/LoadBinaryStl.js" Line="73" Column="52" />
+      <File FileName="Assets/ByteFunctions.js" Line="87" Column="2" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
