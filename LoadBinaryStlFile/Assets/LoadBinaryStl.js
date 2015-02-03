@@ -6,13 +6,16 @@ var bytefcns : ByteFunctions;
 private var shape = new Array ();
 private var triangle = Vector3(0,0,0);
 private var number_of_triangles : int;
+private var selectable : boolean;
+public var default_color : Color;
 
 function Start () {
-
+	
   // Read a stl file :
   // Grab the file via a WWW request
   var mesh : Mesh = GetComponent(MeshFilter).mesh;
   var old_bounds : Bounds = mesh.bounds;
+  var old_box : Bounds = this.renderer.collider.bounds;
   var www_stl : WWW = new WWW (stl_location);
 
   // pause running until the file has been retrieved
@@ -62,20 +65,25 @@ function Start () {
   mesh.RecalculateBounds();
   mesh.Optimize();
   
-  var new_bounds : Bounds = mesh.bounds;
-  
-  Debug.Log("Old Bounds : ");
-  Debug.Log(old_bounds.extents);
-  Debug.Log("New Bounds : ");
-  Debug.Log(mesh.bounds.extents);
-  Debug.Log("Scale Factor : ");
-  
+    
   var new_bound_max :float = get_maximum(mesh.bounds.extents);
   var scale_factor : float = old_bounds.extents[0]/new_bound_max;
   
   this.renderer.transform.localScale.x = this.renderer.transform.localScale.x*scale_factor;
   this.renderer.transform.localScale.y = this.renderer.transform.localScale.y*scale_factor;
   this.renderer.transform.localScale.z = this.renderer.transform.localScale.z*scale_factor;
+  
+  var box : BoxCollider = this.GetComponent(BoxCollider);
+  box.center = renderer.bounds.center;
+  box.size = renderer.bounds.size; 
+//  box.extents.x = renderer.;
+//  box.extents.y = old_box.extents.y;
+//  box.extents.z = old_box.extents.z;
+  
+  selectable = true;
+  default_color = this.renderer.material.color;
+  var stl_file = this.GetComponent(STLFile);
+  stl_file.default_color = default_color;
   //scale_factor = scale_factor - old_bounds.size.x;
   
   //renderer.transform.localScale -= Vector3(scale_factor,scale_factor,scale_factor);
@@ -117,6 +125,12 @@ public function grab_vector(data : String, offset : int, count : int) : Vector3 
   }
   
   return tmp_vec;
+}
+
+function OnMouseDown()
+{
+  if (selectable)
+    this.renderer.material.color = Color.green;
 }
 
 function get_maximum(array : Vector3) : float {
