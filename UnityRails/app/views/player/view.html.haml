@@ -14,7 +14,7 @@
       #ajax_div
       .form-group
         %label{:for => "exampleInputEmail1"} Material
-        %select.combobox.form-control
+        %select.combobox.form-control#selectedMaterial
           %option
           %option{:value => "RED"} Red PLA
           %option{:value => "Green"} Green PLA
@@ -40,11 +40,20 @@
   
   $(document).ready ->
     
+    $('#update_unity').click ->
+      material = $("#selectedMaterial").val()
+      quality =  $('input[data-slider-id="quality_slider"]').val() 
+      scale =  $('input[data-slider-id="scale_slider"]').val() 
+      u.getUnity().SendMessage 'Camera', 'ReceivedMessage', material + "," + quality + "," + scale
+    
+    ReceivedFromUnity = (arg) ->
+      alert arg
+    
     $("#file_select").change (e) ->
       alert "submitting form"
       $('#stl_loader').submit()
       
-    
+
     $('#quality_slider').slider formatter: (value) ->
       'Current value: ' + value
     
