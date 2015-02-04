@@ -11,10 +11,8 @@ function Start () {
 
 }
 
-
 function Update () {
  if(Input.GetMouseButton(0)) { 
- 	Debug.Log ( "testing 123...");
  	xDeg -= Input.GetAxis("Mouse X")*speed; 
  	yDeg -= Input.GetAxis("Mouse Y")*speed; 
  	fromRotation = transform.rotation; 

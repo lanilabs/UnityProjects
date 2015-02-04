@@ -1,0 +1,59 @@
+.row{style:"padding:10px;"}
+  .col-xs-6
+    .panel.panel-default{style:"padding:30px;"}
+      %h1 New 3D Renderer
+      %p Change the inputs in the form to update the player!
+      
+      %br
+      
+      = simple_form_for :stl, url: player_grab_file_url_path, html: {id: "stl_loader", class: "form-inline", multipart: true }, remote: true,  authenticity_token: true do |form|
+        %span.btn.btn-default.btn-file
+          Upload an STL
+          = form.input :file, as: "file", label: false, input_html: {id: "file_select"}
+      %br
+      #ajax_div
+      .form-group
+        %label{:for => "exampleInputEmail1"} Material
+        %select.combobox.form-control
+          %option
+          %option{:value => "RED"} Red PLA
+          %option{:value => "Green"} Green PLA
+          %option{:value => "White"} White PC
+          %option{:value => "Black"} Black PC-ABS
+          %option{:value => "Blue"} Blue ABS
+          %option{:value => "Orange"} Orange ABS
+      
+      .form-group
+        %label{:for => "exampleInputPassword1"} Quality
+        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "100", "data-slider-min" => "0", "data-slider-step" => "10", "data-slider-value" => "50", :type => "text"}
+      
+      .form-group
+        %label{:for => "exampleInputPassword1"} Scale
+        %input#scale_slider{"data-slider-id" => "scale_slider", "data-slider-max" => "100", "data-slider-min" => "0", "data-slider-step" => "10", "data-slider-value" => "50", :type => "text"}
+      .btn.btn-default#update_unity
+        Update
+  .col-xs-6
+    .panel.panel-default{style:"padding:30px;"}
+      = render partial: "player/unity_player"
+
+:coffee
+  
+  $(document).ready ->
+    
+    $("#file_select").change (e) ->
+      alert "submitting form"
+      $('#stl_loader').submit()
+      
+    
+    $('#quality_slider').slider formatter: (value) ->
+      'Current value: ' + value
+    
+    $('#scale_slider').slider formatter: (value) ->
+      'Current value: ' + value
+
+    $("#stl_loader").on("ajax:success", (e, data, status, xhr) ->
+      $("#ajax_div").html data
+    ).on "ajax:error", (e, xhr, status, error) ->
+      $("#ajax_div").html e
+    
+
