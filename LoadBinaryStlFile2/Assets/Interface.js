@@ -1,23 +1,46 @@
 ﻿#pragma strict
-public var stl_meshes : GameObject; 
-var selGridInt : int = 0;
-var selStrings : String[] = ["Grid 1", "Grid 2", "Grid 3", "Grid 4"];
-var price : int = 20;
-var selTexture : Texture[];
-var style : GUIStyle;
+public var stl_mesh : GameObject; 
+public var my_bytes : ByteFunctions;
 
+private var numberOfInstances : int = 0;
+private var i : int; private var j :int;
+private var clone : GameObject;
+
+// Controller for the Unity Webplayer
 
 function Start () {
-	style.normal.textColor = Color.black;
+	//loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
+//	updateAppearance("1,1.1");
 }
+
+function loadFile(stl : String) : boolean {
+	// Check if there are any instances already and remove them
+	if (numberOfInstances >= 1){
+		Destroy (clone);
+	}
+	
+	// Create a new instance
+	clone = GameObject.Instantiate(stl_mesh);
+	clone.SendMessage("SetByteFunctions",my_bytes);
+	
+	clone.SendMessage("SetScale",100);
+	
+	clone.SendMessage("loadMesh",stl);
+	
+	// Add one to the number of inititated instances
+	// right now we only ever have one, but later we may want more
+	numberOfInstances += 1;
+	
+	
+}
+
+function updateAppearance(msg : String) {
+	// Send a message to the gameobject to change its texture , and size
+	clone.SendMessage("ReceivedMessage",msg);
+}
+
 function OnGUI () {
 
-//	GUI.Label (Rect (10, 10, 100, 20), "Choose Texture", style);
-//	selGridInt = GUI.SelectionGrid (Rect (25, 35, 240, 40), selGridInt, selStrings, 2);
-		
-//  	var stl_file = stl_meshes.GetComponent(STLFile);
-//  	stl_meshes.renderer.material.mainTexture = selTexture[selGridInt];
-//  stl_meshes.renderer.material.color = stl_file.default_color;
 }
 	
 function Update () {

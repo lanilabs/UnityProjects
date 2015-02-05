@@ -52,7 +52,7 @@
       material = $("#selectedMaterial").val()
       quality =  $('input[data-slider-id="quality_slider"]').val()
       scale =  $('input[data-slider-id="scale_slider"]').val()
-      u.getUnity().SendMessage 'Cube', 'ReceivedMessage', material + "," + quality + "," + scale
+      u.getUnity().SendMessage 'Camera', 'updateAppearance', material + "," + scale
     
     $(document).on 'change', '.file_select', ->
       alert " new file call"
@@ -77,7 +77,7 @@
     $("#stl_loader").on("ajax:success", (e, data, status, xhr) ->
       console.log "ajax success"
       $("#ajax_div").html "localhost:3000"+data["file_url"]
-      u.getUnity().SendMessage 'Cube', 'loadMesh', "http://localhost:3000"+ data["file_url"]
+      u.getUnity().SendMessage 'Camera', 'loadFile', "http://localhost:3000"+ data["file_url"]
       $("#stl_loader").unbind('submit')
 
     ).on "ajax:error", (e, xhr, status, error) ->

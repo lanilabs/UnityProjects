@@ -19,8 +19,11 @@ private var initial_object : GameObject;
 private var average_position = Vector3(0,0,0);
 
 function Start () {
-	initial_object = Instantiate(this.gameObject);
-	loadMesh("http://localhost:3000/system/file3_ds/stls/000/000/013/original/farm_fixed-2.stl?1423101784");
+	//loadMesh(stl_location);
+}
+
+function SetByteFunctions(bytefunctions : ByteFunctions) {
+	bytefcns = bytefunctions;
 }
 
 function ReceivedMessage(msg : String) {
@@ -28,11 +31,10 @@ function ReceivedMessage(msg : String) {
 	
 	// Function is called when a message is received from javascript
 	material_string =  msg_data[0];
-	quality_string = msg_data[1];
-	size_string = msg_data[2];
+	size_string = msg_data[1];
 	
-	Debug.Log("Applying Material");
-	Debug.Log(this.renderer.material.mainTexture);
+	Debug.Log("Current Scale");
+	Debug.Log(default_scale);
 	
 	// Update Material
 	this.gameObject.renderer.material.mainTexture = selTexture[int.Parse(material_string)];
@@ -42,9 +44,11 @@ function ReceivedMessage(msg : String) {
 	this.gameObject.transform.localScale.y = default_scale * float.Parse(size_string);
 	this.gameObject.transform.localScale.z = default_scale * float.Parse(size_string);
 	
-	// Load new STL File
-	
 	// SendAMessage(msg);
+}
+function SetScale(scale : float) {
+	this.transform.localScale = Vector3(scale,scale,scale);
+	this.default_scale = scale;	
 }
 
 function SendAMessage(msg : String) {
@@ -170,9 +174,8 @@ public function loadMesh(filepath : String) {
   
   // Set Defaults
   default_scale = this.transform.localScale.x;
+  ReceivedMessage('3,2');
   
-  //  this.renderer.material.mainTexture = selTexture[0];
-  ReceivedMessage("0,2,1");
   
 }
 
