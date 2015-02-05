@@ -6,30 +6,29 @@
       
       %br
       
-      = simple_form_for :stl, url: player_grab_file_url_path, html: {id: "stl_loader", class: "form-inline", multipart: true }, remote: true,  authenticity_token: true do |form|
+      = simple_form_for :stl, url: player_grab_file_url_path, html: {id: "stl_loader", class: "form-inline", multipart: true , "data-type" => "json"}, remote: true,  authenticity_token: true do |form|
         %span.btn.btn-default.btn-file
           Upload an STL
-          = form.input :file, as: "file", label: false, input_html: {id: "file_select"}
+          = form.input :file, as: "file", label: false, input_html: {class: "file_select"}
       %br
       #ajax_div
       .form-group
         %label{:for => "exampleInputEmail1"} Material
         %select.combobox.form-control#selectedMaterial
-          %option
-          %option{:value => "RED"} Red PLA
-          %option{:value => "Green"} Green PLA
-          %option{:value => "White"} White PC
-          %option{:value => "Black"} Black PC-ABS
-          %option{:value => "Blue"} Blue ABS
-          %option{:value => "Orange"} Orange ABS
+          %option{:value => "0"} Red PLA
+          %option{:value => "1"} Green PLA
+          %option{:value => "2"} White PC
+          %option{:value => "3"} Black PC-ABS
+          %option{:value => "4"} Blue ABS
+          %option{:value => "5"} Orange ABS
       
       .form-group
         %label{:for => "exampleInputPassword1"} Quality
-        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "100", "data-slider-min" => "0", "data-slider-step" => "10", "data-slider-value" => "50", :type => "text"}
-      
+        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "2", "data-slider-min" => "0.5", "data-slider-step" => "0.1", "data-slider-value" => "1", :type => "text"}
+      %br
       .form-group
         %label{:for => "exampleInputPassword1"} Scale
-        %input#scale_slider{"data-slider-id" => "scale_slider", "data-slider-max" => "100", "data-slider-min" => "0", "data-slider-step" => "10", "data-slider-value" => "50", :type => "text"}
+        %input#scale_slider{"data-slider-id" => "scale_slider", "data-slider-max" => "2", "data-slider-min" => "0.5", "data-slider-step" => "0.2", "data-slider-value" => "1", :type => "text"}
       .btn.btn-default#update_unity
         Update
   .col-xs-6
@@ -41,17 +40,32 @@
   $(document).ready ->
     
     $('#update_unity').click ->
+      update_items()
+     
+    $('#scale_slider').on 'slide', (slideEvt) ->
+      update_items()
+
+    $('#selectedMaterial').change ->
+      update_items()
+      
+    update_items = () ->
       material = $("#selectedMaterial").val()
-      quality =  $('input[data-slider-id="quality_slider"]').val() 
-      scale =  $('input[data-slider-id="scale_slider"]').val() 
-      u.getUnity().SendMessage 'Camera', 'ReceivedMessage', material + "," + quality + "," + scale
+      quality =  $('input[data-slider-id="quality_slider"]').val()
+      scale =  $('input[data-slider-id="scale_slider"]').val()
+      u.getUnity().SendMessage 'Cube', 'ReceivedMessage', material + "," + quality + "," + scale
     
-    ReceivedFromUnity = (arg) ->
-      alert arg
-    
-    $("#file_select").change (e) ->
-      alert "submitting form"
+    $(document).on 'change', '.file_select', ->
+      alert " new file call"
       $('#stl_loader').submit()
+      return
+    
+    # $('.file_select').on 'change', ->
+    #  return false
+
+    # $("#file_select").change (e) ->
+    #   alert "new file selected"
+    #   $('#stl_loader').submit()
+    #   $(this).val('')
       
 
     $('#quality_slider').slider formatter: (value) ->
@@ -61,8 +75,13 @@
       'Current value: ' + value
 
     $("#stl_loader").on("ajax:success", (e, data, status, xhr) ->
-      $("#ajax_div").html data
+      console.log "ajax success"
+      $("#ajax_div").html "localhost:3000"+data["file_url"]
+      u.getUnity().SendMessage 'Cube', 'loadMesh', "http://localhost:3000"+ data["file_url"]
+      $("#stl_loader").unbind('submit')
+
     ).on "ajax:error", (e, xhr, status, error) ->
-      $("#ajax_div").html e
+      console.log "ajax error"
+      $("#ajax_div").html JSON.stringify e
     
 

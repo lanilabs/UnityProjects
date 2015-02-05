@@ -10,9 +10,10 @@
   	var config = {
   		width: 480, 
   		height: 300,
-  		params: { enableDebugging:"0" }
+  		params: { enableDebugging:"q" }
   		
   	};
+    config.params["disableContextMenu"] = true;
   	var u = new UnityObject2(config);
 
   	jQuery(function() {
@@ -49,7 +50,7 @@
   				break;
   			}
   		});
-  		u.initPlugin(jQuery("#unityPlayer")[0], "http://localhost:3000/UnityPlayerView.unity3d");
+  		u.initPlugin(jQuery("#unityPlayer")[0], "http://localhost:3000/binary_loader.unity3d");
   	});
   -->
 
