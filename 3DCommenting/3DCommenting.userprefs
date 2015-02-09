@@ -1,13 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/SendRay.js">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Interface.js">
     <Files>
-      <File FileName="Assets/DisplayMessage.js" Line="16" Column="1" />
-      <File FileName="Assets/CommentHandler.js" Line="28" Column="40" />
-      <File FileName="Assets/SendRay.js" Line="126" Column="3" />
-      <File FileName="Assets/DisplayMessage.js" Line="15" Column="1" />
-      <File FileName="Assets/Interface.js" Line="12" Column="99" />
-      <File FileName="Assets/LoadBinaryStl.js" Line="138" Column="28" />
+      <File FileName="Assets/Message.js" Line="15" Column="27" />
+      <File FileName="Assets/CommentHandler.js" Line="55" Column="52" />
+      <File FileName="Assets/SendRay.js" Line="118" Column="1" />
+      <File FileName="Assets/Interface.js" Line="13" Column="23" />
+      <File FileName="Assets/LoadBinaryStl.js" Line="43" Column="23" />
+      <File FileName="Assets/TransformControls.js" Line="14" Column="21" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

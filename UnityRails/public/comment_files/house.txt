@@ -1,0 +1,1 @@
+0.6,0,0.1,This window is too small,-0.6,0,0.1,This window is too big,-0.1,0.0,0.5,Too little attic space,0.1,-0.5,-0.2,No side windows

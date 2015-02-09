@@ -1,3 +1,13 @@
+:javascript
+  // All functions fired by unity should go up here:
+  
+  var RetrieveComment;
+
+  RetrieveComment = function(msg) {
+    element = document.getElementById("popover");
+    element.innerHTML = msg;
+  };
+
 .row{style:"padding:10px;"}
   .col-xs-6
     .panel.panel-default{style:"padding:30px;"}
@@ -32,12 +42,21 @@
       .btn.btn-default#update_unity
         Update
   .col-xs-6
-    .panel.panel-default{style:"padding:30px;"}
+    .panel.panel-default#unity_panel{style:"padding:30px;"}
       = render partial: "player/unity_player"
+.panel.panel-default#popover{style: "position:absolute;"}
 
 :coffee
-  
+ 
   $(document).ready ->
+    $("#unity_panel").mouseout () ->
+      $("#popover").html ""
+
+    $(window).mousemove (e) ->
+      mouseX = Math.min(e.pageX)
+      mouseY = Math.min(e.pageY)
+      $("#popover").css "top", mouseY + 5
+      $("#popover").css "left", mouseX + 5
     
     $('#update_unity').click ->
       update_items()
@@ -50,7 +69,7 @@
 
     $('#selectedMaterial').change ->
       update_items()
-      
+
     update_items = () ->
       material = $("#selectedMaterial").val()
       quality  = $('input[data-slider-id="quality_slider"]').val()
@@ -71,8 +90,10 @@
     #   $(this).val('')
       
 
-    $('#quality_slider').slider formatter: (value) ->
-      'Current value: ' + value
+    $('#quality_slider').slider
+      reversed: true
+      formatter: (value) ->
+        'Current value: ' + value
     
     $('#scale_slider').slider formatter: (value) ->
       'Current value: ' + value

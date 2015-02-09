@@ -9,7 +9,8 @@ private var clone : GameObject;
 // Controller for the Unity Webplayer
 
 function Start () {
-	//loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
+//	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
+//	loadFile("http://localhost:3000/comment_files/farm_comments.stl");
 	//updateAppearance("1,1.1");
 }
 

@@ -11,12 +11,12 @@ function Start () {
 
 }
 
-function Update () {
- if(Input.GetMouseButton(0)) { 
- 	xDeg -= Input.GetAxis("Mouse X")*speed; 
- 	yDeg -= Input.GetAxis("Mouse Y")*speed; 
- 	fromRotation = transform.rotation; 
- 	toRotation = Quaternion.Euler(yDeg,xDeg,0); 
- 	transform.rotation = Quaternion.Lerp(fromRotation,toRotation,Time.deltaTime * 10 * lerpSpeed); 
- 	}
+function Update () {	
+	if(Input.GetMouseButton(0)) { 
+	 	xDeg -= Input.GetAxis("Mouse X")*speed; 
+	 	yDeg -= Input.GetAxis("Mouse Y")*speed; 
+	 	fromRotation = transform.rotation; 
+	 	toRotation = Quaternion.Euler(yDeg,xDeg,0); 
+	 	transform.rotation = Quaternion.Lerp(fromRotation,toRotation,Time.deltaTime * 10 * lerpSpeed); 
+	}
 }

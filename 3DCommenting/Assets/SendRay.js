@@ -32,7 +32,11 @@ function GenerateBoundingCylinder(layer_height : double) {
 	cylinder.transform.position = stl_object.transform.position;
 	var scale : Vector3 = stl_object.renderer.bounds.size;
 	cylinder.transform.localScale = Vector3(scale.x*4,scale.y*2,scale.z*4);
-	destroyAllChildren();
+	
+	var old_lines =  GameObject.FindGameObjectsWithTag ("fill_line");
+ 	for( i = 0 ; i < old_lines.length ; i ++)
+ 		Destroy(old_lines[i]);
+         
 	ScanCameraView(layer_height);
 }
 
@@ -110,6 +114,8 @@ function ScanCameraView(height : double) {
 
 function generateLine(line_points : Array, length : int, thickness : float) {
 	var lineRenderer : LineRenderer =  new GameObject().AddComponent(LineRenderer);
+	lineRenderer.gameObject.name = "fill_line";
+	lineRenderer.gameObject.tag = "fill_line";
 	lineRenderer.useWorldSpace = false;
 	lineRenderer.transform.parent = stl_object.transform;
 //	lineRenderer.gameObject.renderer.material.mainTexture = lineTextures[0];

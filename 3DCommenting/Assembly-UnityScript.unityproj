@@ -48,9 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\ByteFunctions.js" />
      <Compile Include="Assets\CommentHandler.js" />
-     <Compile Include="Assets\DisplayMessage.js" />
      <Compile Include="Assets\Interface.js" />
      <Compile Include="Assets\LoadBinaryStl.js" />
+     <Compile Include="Assets\Message.js" />
      <Compile Include="Assets\STLFile.js" />
      <Compile Include="Assets\ScreenSettings.js" />
      <Compile Include="Assets\SendRay.js" />

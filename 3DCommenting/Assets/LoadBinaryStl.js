@@ -189,9 +189,12 @@ public function loadMesh(filepath : String) {
   
   // Set Defaults
   default_scale = this.transform.localScale.x;
-  ReceivedMessage('1,1');
   
-
+  
+  // Once the stl file is finished loading, fill it with comments
+  GameObject.Find("Camera").GetComponent(CommentHandler).FillWithComments(header);
+  GameObject.Find("Camera").GetComponent(SendRay).ScanCameraView(0.3);
+  ReceivedMessage('0,1');
   
 }
 
