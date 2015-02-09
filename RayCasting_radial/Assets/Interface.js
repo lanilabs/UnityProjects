@@ -9,7 +9,7 @@ private var clone : GameObject;
 // Controller for the Unity Webplayer
 
 function Start () {
-	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/446/original/Skinny_Jimmy3b516932a11720d49a160763e7e7b3ff-skinnyjimmy_fixed.stl");
+	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
 	//updateAppearance("1,1.1");
 }
 

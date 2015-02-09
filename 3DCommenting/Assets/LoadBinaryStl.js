@@ -3,6 +3,9 @@
 public var bytefcns : ByteFunctions;
 public var selTexture : Texture[];
 
+@HideInInspector
+public var default_scale : float;
+
 private var shape = new Array ();
 private var triangle = Vector3(0,0,0);
 private var number_of_triangles : int;
@@ -13,7 +16,7 @@ private var  quality_string : String = "50";
 private var 	size_string : String = "50";
 private var stl_location : String
   = "http://www.lanilabs.com/system/user_models/stlfiles/000/000/445/original/Skinny_Jimmy3b516932a11720d49a160763e7e7b3ff-skinnyjimmy_fixed.stl";
-private var default_scale : float;
+
 private var initial_object : GameObject;
 
 private var average_position = Vector3(0,0,0);
@@ -48,7 +51,10 @@ function ReceivedMessage(msg : String) {
 }
 function SetScale(scale : float) {
 	this.transform.localScale = Vector3(scale,scale,scale);
-	this.default_scale = scale;	
+	this.default_scale = this.transform.localScale.x;
+	Debug.Log("Set scale to : ");
+	Debug.Log(this.transform.localScale);
+	Debug.Log(default_scale);	
 }
 
 function SendAMessage(msg : String) {
@@ -63,7 +69,12 @@ public function loadMesh(filepath : String) {
   // Grab the file via a WWW request
   var mesh : Mesh = GetComponent(MeshFilter).mesh;
   var old_bounds : Bounds = mesh.bounds;
-  var old_box : Bounds = this.renderer.collider.bounds;
+  var old_scale : Vector3 = this.transform.localScale;
+  
+  Debug.Log("Old scale is");
+  Debug.Log(old_scale);
+  
+//  var old_box : Bounds = this.transform.localScale;
   var www_stl : WWW = new WWW (filepath);
   
   Debug.Log("Loading STL form this location : ");
@@ -139,9 +150,11 @@ public function loadMesh(filepath : String) {
   this.renderer.transform.position.z = this.renderer.transform.position.z - average_position.z*scale_factor*100 ;
   
   // Get the colider and resize it to match that of the new object
-  var box : BoxCollider = this.GetComponent(BoxCollider);
-  box.center = renderer.bounds.center;
-  box.size = renderer.bounds.size; 
+//  var box : BoxCollider = this.GetComponent(BoxCollider);
+//  box.center = renderer.bounds.center;
+  var new_size = this.renderer.transform.localScale.x;
+  
+//  box.size = this.renderer.transform.localScale; 
   
   // Updating Pivot for better rotation:
   var p : Vector3 = Vector3(0,0,0);
@@ -168,7 +181,7 @@ public function loadMesh(filepath : String) {
   mesh.vertices = verts;
   mesh.RecalculateBounds();
   
-  box.center += diff;
+//  box.center += diff;
   selectable = true;
   
   // Attatch a mesh collider around the object
@@ -176,7 +189,7 @@ public function loadMesh(filepath : String) {
   
   // Set Defaults
   default_scale = this.transform.localScale.x;
-  ReceivedMessage('3,2');
+  ReceivedMessage('1,1');
   
 
   

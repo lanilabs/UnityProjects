@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{5B7B811B-8677-599C-1F86-2BAEAB862A0B}</ProjectGuid>
+	<ProjectGuid>{F772954E-A237-F9E2-4C15-90CE9E8B244E}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -99,14 +99,14 @@
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurfacePro Hidden Front Opaque Specular.shader" />
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurface SFX Depth Write Only.shader" />
  <Reference Include="websocket-sharp">
- <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/RayCasting_radial/Assets/Plugins/websocket-sharp.dll</HintPath>
+ <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/3DCommenting/Assets/Plugins/websocket-sharp.dll</HintPath>
  </Reference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{5C247FA8-76E3-DABF-3710-9329978B2FD1}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{7BB28814-5D1E-0BEF-7C3F-33861AAA5E10}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
-      <Project>{F2832588-09A2-707F-44BC-0CA2F399BF57}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+      <Project>{9AE80834-4F5A-B4EC-BBCC-33818954165F}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

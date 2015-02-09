@@ -9,7 +9,7 @@ private var clone : GameObject;
 // Controller for the Unity Webplayer
 
 function Start () {
-	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/446/original/Skinny_Jimmy3b516932a11720d49a160763e7e7b3ff-skinnyjimmy_fixed.stl");
+	//loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
 	//updateAppearance("1,1.1");
 }
 
@@ -21,10 +21,9 @@ function loadFile(stl : String) : boolean {
 	
 	// Create a new instance
 	clone = GameObject.Instantiate(stl_mesh);
+	
 	clone.SendMessage("SetByteFunctions",my_bytes);
-	
 	clone.SendMessage("SetScale",100);
-	
 	clone.SendMessage("loadMesh",stl);
 	
 	// Add one to the number of inititated instances
@@ -37,6 +36,16 @@ function loadFile(stl : String) : boolean {
 function updateAppearance(msg : String) {
 	// Send a message to the gameobject to change its texture , and size
 	clone.SendMessage("ReceivedMessage",msg);
+	
+	// Check to see if there is a third and fourth entry as inputs:
+	var msg_data = msg.Split(","[0]);
+	if ( msg_data.Length > 2 ){
+		// Then we assume they want to see quality as well..
+		// Get data from the ray casting component of the camera
+		var ray_caster = this.GetComponent(SendRay);
+		// Draw layers around the object
+		ray_caster.GenerateBoundingCylinder(double.Parse(msg_data[2])/10);
+	}
 }
 
 function OnGUI () {

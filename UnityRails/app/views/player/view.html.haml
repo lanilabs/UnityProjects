@@ -24,7 +24,7 @@
       
       .form-group
         %label{:for => "exampleInputPassword1"} Quality
-        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "2", "data-slider-min" => "0.5", "data-slider-step" => "0.1", "data-slider-value" => "1", :type => "text"}
+        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "10", "data-slider-min" => "1.2", "data-slider-step" => "0.5", "data-slider-value" => "3", :type => "text"}
       %br
       .form-group
         %label{:for => "exampleInputPassword1"} Scale
@@ -42,6 +42,9 @@
     $('#update_unity').click ->
       update_items()
      
+    $('#quality_slider').on 'slide', (slideEvt) ->
+      update_items()
+
     $('#scale_slider').on 'slide', (slideEvt) ->
       update_items()
 
@@ -50,9 +53,9 @@
       
     update_items = () ->
       material = $("#selectedMaterial").val()
-      quality =  $('input[data-slider-id="quality_slider"]').val()
-      scale =  $('input[data-slider-id="scale_slider"]').val()
-      u.getUnity().SendMessage 'Camera', 'updateAppearance', material + "," + scale
+      quality  = $('input[data-slider-id="quality_slider"]').val()
+      scale    = $('input[data-slider-id="scale_slider"]').val()
+      u.getUnity().SendMessage 'Camera', 'updateAppearance', material + "," + scale + "," + quality
     
     $(document).on 'change', '.file_select', ->
       alert " new file call"
@@ -79,6 +82,7 @@
       $("#ajax_div").html "localhost:3000"+data["file_url"]
       u.getUnity().SendMessage 'Camera', 'loadFile', "http://localhost:3000"+ data["file_url"]
       $("#stl_loader").unbind('submit')
+      update_items()
 
     ).on "ajax:error", (e, xhr, status, error) ->
       console.log "ajax error"

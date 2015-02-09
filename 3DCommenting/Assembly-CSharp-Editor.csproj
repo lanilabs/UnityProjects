@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{F03DEBB7-C6E9-0AD0-00CF-0910BA227BFF}</ProjectGuid>
+	<ProjectGuid>{A4148F92-774E-9C0F-1DB3-E48F5A7C9442}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -97,7 +97,7 @@
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurfacePro Hidden Front Opaque Specular.shader" />
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurface SFX Depth Write Only.shader" />
  <Reference Include="websocket-sharp">
- <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/RayCasting_radial/Assets/Plugins/websocket-sharp.dll</HintPath>
+ <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/3DCommenting/Assets/Plugins/websocket-sharp.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.Graphs">
  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.Graphs.dll</HintPath>
@@ -105,13 +105,13 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Assembly-CSharp-firstpass.csproj">
-      <Project>{5C247FA8-76E3-DABF-3710-9329978B2FD1}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
+      <Project>{7BB28814-5D1E-0BEF-7C3F-33861AAA5E10}</Project>      <Name>Assembly-CSharp-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript-firstpass.unityproj">
-      <Project>{F2832588-09A2-707F-44BC-0CA2F399BF57}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
+      <Project>{9AE80834-4F5A-B4EC-BBCC-33818954165F}</Project>      <Name>Assembly-UnityScript-firstpass</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{5B7B811B-8677-599C-1F86-2BAEAB862A0B}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
+      <Project>{F772954E-A237-F9E2-4C15-90CE9E8B244E}</Project>      <Name>Assembly-CSharp</Name>    </ProjectReference>
     <ProjectReference Include="Assembly-UnityScript.unityproj">
-      <Project>{CB14B6CD-3A8B-E43E-69B5-91F096E774C1}</Project>      <Name>Assembly-UnityScript</Name>    </ProjectReference>
+      <Project>{09D66FB9-C988-1B4B-F952-CA1AFBB73789}</Project>      <Name>Assembly-UnityScript</Name>    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

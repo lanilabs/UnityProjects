@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{5C247FA8-76E3-DABF-3710-9329978B2FD1}</ProjectGuid>
+	<ProjectGuid>{7BB28814-5D1E-0BEF-7C3F-33861AAA5E10}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -98,7 +98,7 @@
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurfacePro Hidden Front Opaque Specular.shader" />
      <None Include="Assets\Hard Surface Free\HardSurface Shaders\HardSurface SFX Depth Write Only.shader" />
  <Reference Include="websocket-sharp">
- <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/RayCasting_radial/Assets/Plugins/websocket-sharp.dll</HintPath>
+ <HintPath>/Users/lucaszw/Documents/Lanilabs/Side Projects/UnityProjects/3DCommenting/Assets/Plugins/websocket-sharp.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
