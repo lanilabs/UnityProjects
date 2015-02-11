@@ -4,9 +4,11 @@ public var bytefcns : ByteFunctions;
 public var selTexture : Texture[];
 
 @HideInInspector
+var www_stl : WWW;
+var file_started : boolean = false;
+
 public var default_scale : float;
 
-private var shape = new Array ();
 private var triangle = Vector3(0,0,0);
 private var number_of_triangles : int;
 private var selectable : boolean;
@@ -19,42 +21,36 @@ private var stl_location : String
 
 private var initial_object : GameObject;
 
-private var average_position = Vector3(0,0,0);
+private var average_position = Vector3(0f,0f,0f);
 
 function Start () {
 	//loadMesh(stl_location);
 }
 
+
 function SetByteFunctions(bytefunctions : ByteFunctions) {
 	bytefcns = bytefunctions;
 }
-
-function ReceivedMessage(msg : String) {
-	var msg_data = msg.Split(","[0]);
-	
-	// Function is called when a message is received from javascript
-	material_string =  msg_data[0];
-	size_string = msg_data[1];
-	
-	Debug.Log("Current Scale");
-	Debug.Log(default_scale);
-	
-	// Update Material
-	this.gameObject.renderer.material.mainTexture = selTexture[int.Parse(material_string)];
-	
-	// Update Scale
-	this.gameObject.transform.localScale.x = default_scale * float.Parse(size_string);
-	this.gameObject.transform.localScale.y = default_scale * float.Parse(size_string);
-	this.gameObject.transform.localScale.z = default_scale * float.Parse(size_string);
-	
-	// SendAMessage(msg);
+function ChangeColor(msg : String) {
+	var meshes =  GameObject.FindGameObjectsWithTag ("model_part");
+	for (var mesh_object:GameObject in meshes)
+		mesh_object.renderer.material.mainTexture = selTexture[int.Parse(msg)];
 }
+
+function ChangeSize(msg : String) {
+		
+	var msg_prt = msg.Split(","[0]);
+	var siz = float.Parse(msg_prt[0]);
+	var dim = int.Parse(msg_prt[1]);
+	this.transform.localScale.x = siz*default_scale;
+	this.transform.localScale.y = siz*default_scale;
+	this.transform.localScale.z = siz*default_scale;
+
+}
+
 function SetScale(scale : float) {
 	this.transform.localScale = Vector3(scale,scale,scale);
 	this.default_scale = this.transform.localScale.x;
-	Debug.Log("Set scale to : ");
-	Debug.Log(this.transform.localScale);
-	Debug.Log(default_scale);	
 }
 
 function SendAMessage(msg : String) {
@@ -63,32 +59,38 @@ function SendAMessage(msg : String) {
 	Application.ExternalCall( "ReceivedFromUnity", msg );
 }
 
-public function loadMesh(filepath : String) {
+public function loadMesh(filepath : String){
+	file_started = true;
+	www_stl = new WWW (filepath);
+}
+
+function Update() {
+	if (file_started && www_stl.isDone == false){
+		Debug.Log(www_stl.progress);
+	}else if (www_stl.isDone && file_started) {
+		renderMesh();
+		file_started = false;
+	}
+}
+
+function renderMesh() {
   
   // Read a stl file :
   // Grab the file via a WWW request
-  var mesh : Mesh = GetComponent(MeshFilter).mesh;
-  var old_bounds : Bounds = mesh.bounds;
+
   var old_scale : Vector3 = this.transform.localScale;
   
   Debug.Log("Old scale is");
   Debug.Log(old_scale);
   
-//  var old_box : Bounds = this.transform.localScale;
-  var www_stl : WWW = new WWW (filepath);
-  
-  Debug.Log("Loading STL form this location : ");
-  Debug.Log(filepath);
-  // pause running until the file has been retrieved
-  yield www_stl; 
-  
-  var txt : String = "";
+  Debug.Log("Loaded STL from this location : ");
+  Debug.Log(www_stl.url);  
   
   // Grab the bytes of the file, and then convert it to a String
   var file_content : String = System.BitConverter.ToString(www_stl.bytes).Replace("-","");
   
   // Declare all iteration variables (cannot use vals more then one otherwise)
-  var i : int = 0;var j : int = 0; var k : int = 0;
+  var i : int = 0;var j : int = 0; var k : int = 0; var m : int = 0;
   
   // Get the file header :
   var header : String = bytefcns.hex_uint8_to_ascii(file_content, 0, 160);
@@ -97,105 +99,118 @@ public function loadMesh(filepath : String) {
   
   // Get the number of triangles in the file
   var num_triangles : uint = bytefcns.hexstr_to_uint32(file_content, 160, 8);
+  var tri_per_mesh = 21666f;
   
-  Debug.Log("Number of Triangles:");
-  Debug.Log(num_triangles);
+  var num_meshes = Mathf.CeilToInt(num_triangles/tri_per_mesh);
+  var old_bounds : Bounds = this.renderer.bounds;
   
-  var all_triangles = new int[num_triangles*3];
+  Debug.Log("Number of Meshes:");
+  Debug.Log(num_meshes);
   
   var offset : int = 168;
   var count : int = 96;
   
-  for (i = 0;i<num_triangles;i++){
-  	
-    //Debug.Log("Getting Triangle # : " + i.ToString());
-    var triangle = grab_triangle(file_content,offset,count);
-    for (j=0;j<3;j++){
-      all_triangles[k] = k ;
-      // Update the average position (used for moving the object later
-      average_position.x += triangle[j].x/(num_triangles * 3);
-      average_position.y += triangle[j].y/( num_triangles * 3);
-      average_position.z += triangle[j].z/(num_triangles * 3);
-       
-      k+= 1;
-      shape.push(triangle[j]);
-	}
-    offset += (count +4);
-  }  
-  
-  // Update the mesh
-  mesh.Clear();
-  
-  mesh.vertices = shape;
-  mesh.triangles = all_triangles;
-  
-  mesh.RecalculateNormals();
-  mesh.RecalculateBounds();
-  mesh.Optimize();
-  
-  
-  var new_bound_max :float = get_maximum(mesh.bounds.extents);
-  var scale_factor : float = old_bounds.extents[0]/new_bound_max;
+  var meshes : Mesh[] = new Mesh[num_meshes];
   
 
-  // Update the scale to be the size of the parent box
-  this.renderer.transform.localScale.x = this.renderer.transform.localScale.x*scale_factor;
-  this.renderer.transform.localScale.y = this.renderer.transform.localScale.y*scale_factor;
-  this.renderer.transform.localScale.z = this.renderer.transform.localScale.z*scale_factor;
+  // Intstantiate Gameobjects to hold each mesh:
+  var mesh_objects : GameObject[];
+  mesh_objects = new GameObject[num_meshes];
+  for (i = 0;i<num_meshes;i++)
+  	mesh_objects[i] = new GameObject();
+  
+  for (m = 0; m< num_meshes; m ++){
+  	  k = 0;
+  	  var shape = new Array ();
+  	  meshes[m] = mesh_objects[m].AddComponent(MeshFilter).mesh;
+  	  var n_triangles = tri_per_mesh;
+	  
+	  if (m == num_meshes-1)
+	  	n_triangles = num_triangles - tri_per_mesh*(num_meshes-1);
+	  
+	  var all_triangles : int[] = new int[n_triangles*3];
+	  
+	  for (i = 0;i<n_triangles;i++){
+	  	
+	    //Debug.Log("Getting Triangle # : " + i.ToString());
+	    var triangle = grab_triangle(file_content,offset,count);
+	    for (j=0;j<3;j++){
+	      all_triangles[k] = k ;
+	      // Update the average position (used for moving the object later
+	      average_position.x += triangle[j].x/(num_triangles * 3);
+	      average_position.y += triangle[j].y/( num_triangles * 3);
+	      average_position.z += triangle[j].z/(num_triangles * 3);
+	       
+	      k+= 1;
+	      shape.push(triangle[j]);
+		}
+	    offset += (count +4);
+	  }  
+	  
+	  // Update the mesh
+	  meshes[m].Clear();
 
-  // Move the mesh until its position is the same of its parent box
-  // Current position - average* scale * box size - box position
-  this.renderer.transform.position.x = this.renderer.transform.position.x - average_position.x*scale_factor*100 ;
-  this.renderer.transform.position.y = this.renderer.transform.position.y - average_position.y*scale_factor*100 ;
-  this.renderer.transform.position.z = this.renderer.transform.position.z - average_position.z*scale_factor*100 ;
-  
-  // Get the colider and resize it to match that of the new object
-//  var box : BoxCollider = this.GetComponent(BoxCollider);
-//  box.center = renderer.bounds.center;
-  var new_size = this.renderer.transform.localScale.x;
-  
-//  box.size = this.renderer.transform.localScale; 
-  
-  // Updating Pivot for better rotation:
-  var p : Vector3 = Vector3(0,0,0);
-  
-  var b : Bounds = mesh.bounds;
-  var offset2 : Vector3 = -1 * b.center;
-  
-  // Get the current pivot position/ rotation point of the object
-  var last_p : Vector3= new Vector3(offset2.x / b.extents.x, offset2.y / b.extents.y, offset2.z / b.extents.z);
-  
-  // Find the difference between this point and the center of the box
-  var diff : Vector3 = Vector3.Scale(mesh.bounds.extents, last_p - p);
-  
-  // Move the object to be centered at the new pivot point
-  this.transform.position -= Vector3.Scale(diff, this.transform.localScale); 
-  
-  // Update the vertices of the object to match new scale
-  var verts = mesh.vertices; 
-  for( i=0; i< verts.Length; i++) {
-		verts[i] += diff;
+	  meshes[m].vertices = shape;
+	  meshes[m].triangles = all_triangles;
+	  
+	  meshes[m].RecalculateNormals();
+	  meshes[m].RecalculateBounds();
+	  meshes[m].Optimize();
   }
-  
-  // Update the bounds of the object
-  mesh.vertices = verts;
-  mesh.RecalculateBounds();
-  
-//  box.center += diff;
-  selectable = true;
-  
-  // Attatch a mesh collider around the object
-  this.gameObject.AddComponent(MeshCollider);
-  
-  // Set Defaults
-  default_scale = this.transform.localScale.x;
+    
+  var lower_bounds : Vector3 = Vector3(100000,100000,100000);
+  var higher_bounds : Vector3 = Vector3(-100000,-10000,-10000);
+  var lower_center : Vector3 = Vector3(0,0,0);
+  //mesh_objects[0].collider.transform.position;
   
   
-  // Once the stl file is finished loading, fill it with comments
-  GameObject.Find("Camera").GetComponent(CommentHandler).FillWithComments(header);
-  GameObject.Find("Camera").GetComponent(SendRay).ScanCameraView(0.3);
-  ReceivedMessage('0,1');
   
+  //mesh_objects[0].collider.transform.position + mesh_objects[0].collider.bounds.size;
+	  	
+  for (var mesh_object:GameObject in mesh_objects) {
+  	mesh_object.name = "model_part";
+  	mesh_object.tag = "model_part";
+  	mesh_object.AddComponent(MeshRenderer);
+  	mesh_object.AddComponent(MeshCollider);
+  	mesh_object.renderer.material = this.renderer.material;
+  	mesh_object.transform.parent = this.transform;
+  	var siz : Vector3 = mesh_object.collider.bounds.size;
+  	var pos : Vector3 = mesh_object.collider.bounds.center - siz/2;
+  	
+	for (i = 0; i< 3; i++){
+ 		if (pos[i] < lower_bounds[i]){
+ 			lower_bounds[i] = pos[i];
+ 			lower_center[i]= pos[i] + siz[i]/2;
+ 		}
+ 		if (pos[i]+siz[i] > higher_bounds[i])
+ 			higher_bounds[i] = pos[i] + siz[i];
+  	}	
+  }
+	var new_size  = higher_bounds - lower_bounds;
+	var new_position = lower_center;
+
+  
+//  var new_bound_max :float = get_maximum(meshes[0].bounds.extents);
+	var new_bound_max : float = get_maximum(new_size);
+	
+  	var scale_factor : float = new_bound_max/old_bounds.extents[0];
+  	
+	// Update the scale to be the size of the parent box
+    for (var mesh_object:GameObject in mesh_objects) {
+    	var mesh_filter  = mesh_object.GetComponent(MeshFilter);
+	  	  
+		mesh_object.renderer.transform.localScale *= 2/scale_factor;
+		mesh_object.renderer.transform.position -= 
+		  	(average_position-Vector3(new_bound_max,new_bound_max,new_bound_max)/2)*2/scale_factor;
+	}
+
+//  // Once the stl file is finished loading, fill it with comments
+  this.GetComponent(MeshFilter).mesh.Clear();
+//  GameObject.Find("Camera").GetComponent(CommentHandler).FillWithComments(header);
+  //GameObject.Find("Camera").GetComponent(SendRay).ScanCameraView(0.3);
+//  ChangeSize("1,1");
+//  ReceivedMessage('2,1');
+
 }
 
 public function grab_triangle(data : String, offset : int , count : int) {
@@ -243,8 +258,4 @@ function get_maximum(array : Vector3) : float {
    }
   }
   return max;
-}
-
-function Update () {
-
 }

@@ -64,7 +64,7 @@ function ScanCameraView(height : double) {
 	Debug.Log("Height");
 	Debug.Log(height);
 	var N_h : float = num_of_layers*2;
-	var N_theta : float = 360;
+	var N_theta : float = 400;
 	
 	var step_size_h : float = H/N_h;
 	var step_size_theta : float = 360/N_theta;
@@ -90,11 +90,11 @@ function ScanCameraView(height : double) {
 				var hit: RaycastHit;
 				var ray: Ray = new Ray(Vector3(x,y,z),direction);
 
-				if (Physics.Raycast(ray, hit) && hit.transform.gameObject.name == stl_object.name){
+				if (Physics.Raycast(ray, hit) && hit.transform.gameObject.transform.parent.name == stl_object.name){
 					line_points.Add (hit.point);
 					
 	
-					if ((hit.point - previous_point).magnitude > 10) {
+					if ((hit.point - previous_point).magnitude > 5) {
 						var last_point = line_points[line_points.length-1];
 						generateLine(line_points, line_points.length-1,step_size_h*2);
 						line_points.Clear();
@@ -107,9 +107,12 @@ function ScanCameraView(height : double) {
 			line_points.Clear();
 	}
 	
+//	var meshes =  GameObject.FindGameObjectsWithTag ("model_part");
+
+ 		
 //	stl_object.renderer.material.shader =  Shader.Find("Unlit/Texture");
 	
-//	GameObject.Find("Cube(Clone)").GetComponent(MeshFilter).mesh.Clear();		
+	GameObject.Find("Cube(Clone)").GetComponent(MeshFilter).mesh.Clear();		
 }
 
 function generateLine(line_points : Array, length : int, thickness : float) {

@@ -34,11 +34,11 @@
       
       .form-group
         %label{:for => "exampleInputPassword1"} Quality
-        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "10", "data-slider-min" => "1.2", "data-slider-step" => "0.5", "data-slider-value" => "3", :type => "text"}
+        %input#quality_slider{"data-slider-id" => "quality_slider", "data-slider-max" => "4", "data-slider-min" => "0.5", "data-slider-step" => "0.5", "data-slider-value" => "3", :type => "text"}
       %br
-      .form-group
-        %label{:for => "exampleInputPassword1"} Scale
-        %input#scale_slider{"data-slider-id" => "scale_slider", "data-slider-max" => "2", "data-slider-min" => "0.5", "data-slider-step" => "0.2", "data-slider-value" => "1", :type => "text"}
+      / .form-group
+      /   %label{:for => "exampleInputPassword1"} Scale
+      /   %input#scale_slider{"data-slider-id" => "scale_slider", "data-slider-max" => "2", "data-slider-min" => "0.5", "data-slider-step" => "0.2", "data-slider-value" => "1", :type => "text"}
       .btn.btn-default#update_unity
         Update
   .col-xs-6
@@ -62,22 +62,29 @@
       update_items()
      
     $('#quality_slider').on 'slide', (slideEvt) ->
-      update_items()
-
-    $('#scale_slider').on 'slide', (slideEvt) ->
-      update_items()
+      quality  = $('input[data-slider-id="quality_slider"]').val()
+      u.getUnity().SendMessage 'Camera', 'updateQuality', quality
+ 
+    # $('#scale_slider').on 'slide', (slideEvt) ->
+    #   scale    = $('input[data-slider-id="scale_slider"]').val()
+    #   u.getUnity().SendMessage 'Camera', 'updateScale', scale + "," + "1"
 
     $('#selectedMaterial').change ->
-      update_items()
+      material = $("#selectedMaterial").val()
+      u.getUnity().SendMessage 'Camera', 'updateColor', material
 
     update_items = () ->
+      
       material = $("#selectedMaterial").val()
-      quality  = $('input[data-slider-id="quality_slider"]').val()
       scale    = $('input[data-slider-id="scale_slider"]').val()
-      u.getUnity().SendMessage 'Camera', 'updateAppearance', material + "," + scale + "," + quality
+      quality  = $('input[data-slider-id="quality_slider"]').val()
+      u.getUnity().SendMessage 'Camera', 'updateColor', material
+      u.getUnity().SendMessage 'Camera', 'updateQuality', quality
+      
+      # u.getUnity().SendMessage 'Camera', 'updateAll', material + "," + quality + "," + scale + ",1"
+      
     
     $(document).on 'change', '.file_select', ->
-      alert " new file call"
       $('#stl_loader').submit()
       return
     

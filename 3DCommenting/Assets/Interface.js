@@ -9,7 +9,7 @@ private var clone : GameObject;
 // Controller for the Unity Webplayer
 
 function Start () {
-//	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/453/original/farm_fixed.stl");
+	loadFile("http://www.lanilabs.com/system/user_models/stlfiles/000/000/465/original/TROPHY_binary.stl");
 //	loadFile("http://localhost:3000/comment_files/farm_comments.stl");
 	//updateAppearance("1,1.1");
 }
@@ -33,20 +33,23 @@ function loadFile(stl : String) : boolean {
 	
 	
 }
+function updateColor(msg : String) {
+	clone.SendMessage("ChangeColor",msg);
+}
+function updateScale(msg: String) {
+	clone.SendMessage("ChangeSize",msg);
+}
+function updateQuality(msg: String){
+	var ray_caster = this.GetComponent(SendRay);
+	ray_caster.GenerateBoundingCylinder(double.Parse(msg)/10);
+}
 
-function updateAppearance(msg : String) {
-	// Send a message to the gameobject to change its texture , and size
-	clone.SendMessage("ReceivedMessage",msg);
-	
-	// Check to see if there is a third and fourth entry as inputs:
-	var msg_data = msg.Split(","[0]);
-	if ( msg_data.Length > 2 ){
-		// Then we assume they want to see quality as well..
-		// Get data from the ray casting component of the camera
-		var ray_caster = this.GetComponent(SendRay);
-		// Draw layers around the object
-		ray_caster.GenerateBoundingCylinder(double.Parse(msg_data[2])/10);
-	}
+function updateAll(msg: String){
+	var msg_prt = msg.Split(","[0]);
+	updateColor(msg_prt[0]);
+	updateQuality(msg_prt[1]);
+	updateScale(msg_prt[2]+","+msg_prt[3]);
+
 }
 
 function OnGUI () {
